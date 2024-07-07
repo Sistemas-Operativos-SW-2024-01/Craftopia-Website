@@ -1,0 +1,93 @@
+<!-- views/products.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Craftopia - Productos</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Craftopia</h1>
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/productos">Productos</a>
+      <a href="/productos/nuevo">Añadir Producto</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Nuestros Productos</h2>
+    <div class="productos">
+      <% productos.forEach(producto => { %>
+        <div class="producto">
+          <h3><%= producto.nombre %></h3>
+          <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" onerror="this.src='/images/default.png'">
+          <p><%= producto.descripcion %></p>
+          <p>Precio: $<%= producto.precio %></p>
+          <p>Artesano: <%= producto.artesanos_codigo %></p>
+          <form class="resenia-form" data-producto-id="<%= producto._id %>">
+            <input type="hidden" name="productoId" value="<%= producto._id %>">
+            <label for="autor">Autor:</label>
+            <input type="text" name="autor" required>
+            <label for="comentario">Comentario:</label>
+            <textarea name="comentario" required></textarea>
+            <label for="calificacion">Calificación:</label>
+            <input type="number" name="calificacion" min="1" max="5" required>
+            <button type="submit">Enviar Reseña</button>
+          </form>
+          <div class="resenias">
+            <h4>Reseñas:</h4>
+            <% producto.resenias.forEach(resenia => { %>
+              <div class="resenia">
+                <p><strong><%= resenia.autor %></strong> (<%= resenia.calificacion %>/5): <%= resenia.comentario %></p>
+                <p><em><%= new Date(resenia.fecha).toLocaleDateString() %></em></p>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+  <script>
+    document.querySelectorAll('.resenia-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const productoId = form.getAttribute('data-producto-id');
+        const autor = form.querySelector('input[name="autor"]').value;
+        const comentario = form.querySelector('textarea[name="comentario"]').value;
+        const calificacion = form.querySelector('input[name="calificacion"]').value;
+
+        const res = await fetch('/resenias', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productoId,
+            autor,
+            comentario,
+            calificacion,
+            fecha: new Date()
+          })
+        });
+
+        if (res.ok) {
+          const resenia = await res.json();
+          const reseniasDiv = form.nextElementSibling;
+          const newResenia = document.createElement('div');
+          newResenia.classList.add('resenia');
+          newResenia.innerHTML = `
+            <p><strong>${resenia.autor}</strong> (${resenia.calificacion}/5): ${resenia.comentario}</p>
+            <p><em>${new Date(resenia.fecha).toLocaleDateString()}</em></p>
+          `;
+          reseniasDiv.appendChild(newResenia);
+          form.reset();
+        } else {
+          alert('Error al enviar la reseña.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

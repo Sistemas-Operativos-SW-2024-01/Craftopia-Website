@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Añadir Producto</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Craftopia</h1>
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/productos">Productos</a>
+      <a href="/productos/nuevo">Añadir Producto</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Añadir Nuevo Producto</h2>
+    <form action="/productos" method="POST">
+      <label for="codigo">Código:</label>
+      <input type="number" id="codigo" name="codigo" required>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion" required></textarea>
+      <label for="precio">Precio:</label>
+      <input type="number" id="precio" name="precio" required>
+      <label for="cantidad">Cantidad:</label>
+      <input type="number" id="cantidad" name="cantidad" required>
+      <label for="artesanos_codigo">Código del Artesano:</label>
+      <input type="number" id="artesanos_codigo" name="artesanos_codigo" required>
+      <label for="categorias_codigo">Código de la Categoría:</label>
+      <input type="number" id="categorias_codigo" name="categorias_codigo" required>
+      <label for="imagen">URL de la Imagen:</label>
+      <input type="text" id="imagen" name="imagen">
+      <button type="submit">Añadir Producto</button>
+    </form>
+  </main>
+</body>
+</html>
